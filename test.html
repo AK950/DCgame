@@ -14,36 +14,34 @@
 
 <script type="text/javascript">
 
-var MortalBeing = {
-	health: 5, 
-	eat: function(){
-		this.health++;
-	}
+MeleeEnemy = function (game, x, y, player){
+
+	this.player = player;
+	Phaser.Sprite.call(this, game, x, y, 'axe');
+
+	game.physics.enable(this,Phaser.Physics.ARCADE);
+
+	this.animations.add('beginSwing', Phaser.Animation.generateFrameNames('axe', 21, 29, '', 2));
+    this.animations.add('swing', Phaser.Animation.generateFrameNames('axe', 30, 32, '', 2));
+    this.animations.add('stuff', Phaser.Animation.generateFrameNames('axe', 00, 08, '', 2));
+    this.anchor.set(0.5,0.5);
+    this.scale.setTo(1,1);
+    game.add.existing(this);
 };
 
-var Enemy = Object.create(MortalBeing);
+MeleeEnemy.prototype = Object.create(Phaser.Sprite.prototype);
+MeleeEnemy.prototype.constructor = MeleeEnemy;
 
-Object.defineProperties(Enemy, {
-	health:{
-		value: 100,
-		writable: true
+MeleeEnemy.prototype.update = function() {
+
+	game.physics.arcade.collide(this,this.player);
+
+	if (this.game.physics.arcade.distanceBetween(this, this.player) < 500)
+	{
+		this.game.physics.arcade.moveToObject(this, this.player,180);
+		this.animations.play('swing',15,true);
 	}
-});
-
-var MeleeCreep = Object.create(Enemy);
-
-
-Object.defineProperties(MeleeCreep, {
-	attack:{
-		value: 50,
-		writable: true
-	}
-});
-
-MeleeCreep.eat();
-
-console.log(MeleeCreep.health);
-
+}
 
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
@@ -55,8 +53,8 @@ function preload() {
 	
 var player;
 var cursors;
-var axe;
-var someBeing;
+var axe1;
+var axe2;
 
 var direction = 0;
 
@@ -71,10 +69,6 @@ function create() {
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-
-   
-
-
     west = game.input.keyboard.addKey(Phaser.Keyboard.A);
     east = game.input.keyboard.addKey(Phaser.Keyboard.D);
     north = game.input.keyboard.addKey(Phaser.Keyboard.W);
@@ -82,36 +76,32 @@ function create() {
 
     cursors = game.input.keyboard.createCursorKeys();
 
-    axe = game.add.sprite(300,100, 'axe');
-
-    axe.anchor.set(0.5,0.5);
-    //axe.scale.setTo(1,1);
-
     player = game.add.sprite(100, 100, 'ada');
+
+    axe1 = new MeleeEnemy(game, 300, 300, player);
+    axe2 = new MeleeEnemy(game, 500, 500, player);
+    
 
     player.animations.add('left', [1, 5, 9, 13], 10, true);
     player.animations.add('right', [3, 7, 11, 15], 10, true);
     player.animations.add('up', [2, 6, 10, 14], 10, true);
     player.animations.add('down', [0, 4, 8, 12], 10, true);
 
-    game.physics.enable([player,axe],Phaser.Physics.ARCADE);
+    game.physics.enable(player,Phaser.Physics.ARCADE);
 
     //collision detection against world
     player.body.collideWorldBounds = true;
-    axe.body.collideWorldBounds = true;
+    //axe.body.collideWorldBounds = true;
 
     //sets up anchor and collision box
     player.anchor.set(0.5,0.5);
     player.body.setSize(32,32,0,2);
-
-    axe.animations.add('beginSwing', Phaser.Animation.generateFrameNames('axe', 21, 29, '', 2));
-    axe.animations.add('swing', Phaser.Animation.generateFrameNames('axe', 30, 32, '', 2));
-    //axe.animations.add('stuff', Phaser.Animation.generateFrameNames('axe', 00, 08, '', 2));
-    axe.animations.play('swing',15,true);
 }
 
 function update() {
-
+	
+	game.physics.arcade.collide(axe1,axe2);
+    
     player.body.velocity.setTo(0,0);
 
     player.body.collideWorldBounds = true;
@@ -184,13 +174,6 @@ function update() {
             player.frame = 3;
         }
     }
-
-    game.physics.arcade.collide(axe,player);
-
-	if (this.game.physics.arcade.distanceBetween(axe, player) < 500)
-	{
-		this.game.physics.arcade.moveToObject(axe, player,180);
-	}
 
 }
 
