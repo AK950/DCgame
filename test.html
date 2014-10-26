@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8" />
     <title>Phaser - Animation Test</title>
-	<script type="text/javascript" src="/Users/allenkim/Desktop/phaser/build/phaser.min.js"></script>
+	<script type="text/javascript" src="js/phaser.min.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -14,6 +14,37 @@
 
 <script type="text/javascript">
 
+var MortalBeing = {
+	health: 5, 
+	eat: function(){
+		this.health++;
+	}
+};
+
+var Enemy = Object.create(MortalBeing);
+
+Object.defineProperties(Enemy, {
+	health:{
+		value: 100,
+		writable: true
+	}
+});
+
+var MeleeCreep = Object.create(Enemy);
+
+
+Object.defineProperties(MeleeCreep, {
+	attack:{
+		value: 50,
+		writable: true
+	}
+});
+
+MeleeCreep.eat();
+
+console.log(MeleeCreep.health);
+
+
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 function preload() {
@@ -21,10 +52,11 @@ function preload() {
     game.load.spritesheet('ada', 'assets/Ada.png',48,48);
     game.load.image('projectile', 'assets/teddybearprojectile.png')
 }
-
+	
 var player;
 var cursors;
 var axe;
+var someBeing;
 
 var direction = 0;
 
@@ -39,6 +71,10 @@ function create() {
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
+
+   
+
+
     west = game.input.keyboard.addKey(Phaser.Keyboard.A);
     east = game.input.keyboard.addKey(Phaser.Keyboard.D);
     north = game.input.keyboard.addKey(Phaser.Keyboard.W);
@@ -49,7 +85,7 @@ function create() {
     axe = game.add.sprite(300,100, 'axe');
 
     axe.anchor.set(0.5,0.5);
-    axe.scale.setTo(1,1);
+    //axe.scale.setTo(1,1);
 
     player = game.add.sprite(100, 100, 'ada');
 
@@ -58,11 +94,11 @@ function create() {
     player.animations.add('up', [2, 6, 10, 14], 10, true);
     player.animations.add('down', [0, 4, 8, 12], 10, true);
 
-    game.physics.enable(player,Phaser.Physics.ARCADE);
-    game.physics.enable(axe,Phaser.Physics.ARCADE);
+    game.physics.enable([player,axe],Phaser.Physics.ARCADE);
 
     //collision detection against world
     player.body.collideWorldBounds = true;
+    axe.body.collideWorldBounds = true;
 
     //sets up anchor and collision box
     player.anchor.set(0.5,0.5);
@@ -70,8 +106,8 @@ function create() {
 
     axe.animations.add('beginSwing', Phaser.Animation.generateFrameNames('axe', 21, 29, '', 2));
     axe.animations.add('swing', Phaser.Animation.generateFrameNames('axe', 30, 32, '', 2));
-    axe.animations.add('stuff', Phaser.Animation.generateFrameNames('axe', 00, 08, '', 2));
-    axe.animations.play('swing',8,true);
+    //axe.animations.add('stuff', Phaser.Animation.generateFrameNames('axe', 00, 08, '', 2));
+    axe.animations.play('swing',15,true);
 }
 
 function update() {
@@ -104,25 +140,25 @@ function update() {
         player.body.velocity.y = -speed/Math.sqrt(2);
         player.animations.play('up');
     }
-    else if (west.isDown && !north.isDown && !south.isDown)
+    else if (west.isDown)
     {
         player.body.velocity.x = -speed;
         player.animations.play('left');
         direction = 1;
     }
-    else if (east.isDown && !north.isDown && !south.isDown)
+    else if (east.isDown)
     {
         player.body.velocity.x = speed;
         player.animations.play('right');
         direction = 3;
     }
-    else if (south.isDown && !east.isDown && !west.isDown)
+    else if (south.isDown)
     {
         player.body.velocity.y = speed;
         player.animations.play('down');
         direction = 0;
     }
-    else if (north.isDown && !west.isDown && !east.isDown)
+    else if (north.isDown)
     {
         player.body.velocity.y = -speed;
         player.animations.play('up');
@@ -148,6 +184,14 @@ function update() {
             player.frame = 3;
         }
     }
+
+    game.physics.arcade.collide(axe,player);
+
+	if (this.game.physics.arcade.distanceBetween(axe, player) < 500)
+	{
+		this.game.physics.arcade.moveToObject(axe, player,180);
+	}
+
 }
 
 </script>
