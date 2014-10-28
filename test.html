@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+    <title>Phaser - Animation Test</title>
+	<script type="text/javascript" src="js/phaser.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+MeleeEnemy = function (game, x, y, player){
+
+	this.player = player;
+	Phaser.Sprite.call(this, game, x, y, 'axe');
+
+	game.physics.enable(this,Phaser.Physics.ARCADE);
+
+	this.animations.add('beginSwing', Phaser.Animation.generateFrameNames('axe', 21, 29, '', 2));
+    this.animations.add('swing', Phaser.Animation.generateFrameNames('axe', 30, 32, '', 2));
+    this.animations.add('stuff', Phaser.Animation.generateFrameNames('axe', 00, 08, '', 2));
+    this.anchor.set(0.5,0.5);
+    this.scale.setTo(1,1);
+
+    this.body.collideWorldBounds = true;
+    game.add.existing(this);
+};
+
+MeleeEnemy.prototype = Object.create(Phaser.Sprite.prototype);
+MeleeEnemy.prototype.constructor = MeleeEnemy;
+
+MeleeEnemy.prototype.update = function() {
+
+	game.physics.arcade.collide(this,this.player);
+
+	if (this.game.physics.arcade.distanceBetween(this, this.player) < 500)
+	{
+		this.game.physics.arcade.moveToObject(this, this.player,180);
+		this.animations.play('swing',15,true);
+	}
+}
+
+RangedEnemy = function (game, x, y, player){
+
+	this.player = player;
+	Phaser.Sprite.call(this, game, x, y, 'star');
+
+	game.physics.enable(this,Phaser.Physics.ARCADE);
+
+    this.anchor.set(0.5,0.5);
+    this.scale.setTo(1,1);
+    this.body.collideWorldBounds = true;
+
+    game.add.existing(this);
+};
+
+RangedEnemy.prototype = Object.create(Phaser.Sprite.prototype);
+RangedEnemy.prototype.constructor = RangedEnemy;
+
+RangedEnemy.prototype.update = function() {
+
+	game.physics.arcade.collide(this,this.player);
+
+	if (this.body.x < this.player.x)
+	{
+		this.body.velocity.x = 150;
+	}
+	else if (this.body.x > this.player.x)
+	{
+		this.body.velocity.x = -150;
+	}
+	else 
+	{
+		this.body.x = 0;
+	}
+}
+
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+
+function preload() {
+    game.load.atlasJSONHash('axe', 'assets/axeSprites.png', 'assets/axeSprites.json');
+    game.load.spritesheet('ada', 'assets/Ada.png',48,48);
+    game.load.image('projectile', 'assets/teddybearprojectile.png');
+    game.load.image('star', 'assets/star.png');
+}
+	
+var player;
+var cursors;
+var axe1;
+var axe2;
+
+var direction = 0;
+
+var west;
+var east;
+var north;
+var south;
+
+var speed = 150;
+
+function create() {
+
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+
+    west = game.input.keyboard.addKey(Phaser.Keyboard.A);
+    east = game.input.keyboard.addKey(Phaser.Keyboard.D);
+    north = game.input.keyboard.addKey(Phaser.Keyboard.W);
+    south = game.input.keyboard.addKey(Phaser.Keyboard.S);
+
+    cursors = game.input.keyboard.createCursorKeys();
+
+    player = game.add.sprite(100, 100, 'ada');
+
+    axe1 = new MeleeEnemy(game, 300, 300, player);
+    axe2 = new MeleeEnemy(game, 500, 500, player);
+    
+    star = new RangedEnemy(game, 700,500, player);
+
+    player.animations.add('left', [1, 5, 9, 13], 10, true);
+    player.animations.add('right', [3, 7, 11, 15], 10, true);
+    player.animations.add('up', [2, 6, 10, 14], 10, true);
+    player.animations.add('down', [0, 4, 8, 12], 10, true);
+
+    game.physics.enable(player,Phaser.Physics.ARCADE);
+
+    //collision detection against world
+    player.body.collideWorldBounds = true;
+    //axe.body.collideWorldBounds = true;
+
+    //sets up anchor and collision box
+    player.anchor.set(0.5,0.5);
+    player.body.setSize(32,32,0,2);
+}
+
+function update() {
+	
+	game.physics.arcade.collide(axe1,axe2);
+    
+    player.body.velocity.setTo(0,0);
+
+    player.body.collideWorldBounds = true;
+
+    if (east.isDown && south.isDown)
+    {
+        player.body.velocity.x = speed/Math.sqrt(2);
+        player.body.velocity.y = speed/Math.sqrt(2);
+        player.animations.play('down');
+    }
+    else if (west.isDown && south.isDown)
+    {
+        player.body.velocity.x = -speed/Math.sqrt(2);
+        player.body.velocity.y = speed/Math.sqrt(2);
+        player.animations.play('down');
+    }
+    else if (east.isDown && north.isDown)
+    {
+        player.body.velocity.x = speed/Math.sqrt(2);
+        player.body.velocity.y = -speed/Math.sqrt(2);
+        player.animations.play('up');
+    }
+    else if (west.isDown && north.isDown)
+    {
+        player.body.velocity.x = -speed/Math.sqrt(2);
+        player.body.velocity.y = -speed/Math.sqrt(2);
+        player.animations.play('up');
+    }
+    else if (west.isDown)
+    {
+        player.body.velocity.x = -speed;
+        player.animations.play('left');
+        direction = 1;
+    }
+    else if (east.isDown)
+    {
+        player.body.velocity.x = speed;
+        player.animations.play('right');
+        direction = 3;
+    }
+    else if (south.isDown)
+    {
+        player.body.velocity.y = speed;
+        player.animations.play('down');
+        direction = 0;
+    }
+    else if (north.isDown)
+    {
+        player.body.velocity.y = -speed;
+        player.animations.play('up');
+        direction = 2;
+    }
+    else
+    {
+        player.animations.stop();
+        if (direction == 0)
+        {
+            player.frame = 0;
+        }
+        else if (direction == 1)
+        {
+            player.frame = 1;
+        }
+        else if (direction == 2)
+        {
+            player.frame = 2;
+        }
+        else
+        {
+            player.frame = 3;
+        }
+    }
+
+}
+
+</script>
+
+</body>
+</html>
