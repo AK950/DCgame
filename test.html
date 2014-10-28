@@ -26,6 +26,8 @@ MeleeEnemy = function (game, x, y, player){
     this.animations.add('stuff', Phaser.Animation.generateFrameNames('axe', 00, 08, '', 2));
     this.anchor.set(0.5,0.5);
     this.scale.setTo(1,1);
+
+    this.body.collideWorldBounds = true;
     game.add.existing(this);
 };
 
@@ -43,12 +45,48 @@ MeleeEnemy.prototype.update = function() {
 	}
 }
 
+RangedEnemy = function (game, x, y, player){
+
+	this.player = player;
+	Phaser.Sprite.call(this, game, x, y, 'star');
+
+	game.physics.enable(this,Phaser.Physics.ARCADE);
+
+    this.anchor.set(0.5,0.5);
+    this.scale.setTo(1,1);
+    this.body.collideWorldBounds = true;
+
+    game.add.existing(this);
+};
+
+RangedEnemy.prototype = Object.create(Phaser.Sprite.prototype);
+RangedEnemy.prototype.constructor = RangedEnemy;
+
+RangedEnemy.prototype.update = function() {
+
+	game.physics.arcade.collide(this,this.player);
+
+	if (this.body.x < this.player.x)
+	{
+		this.body.velocity.x = 150;
+	}
+	else if (this.body.x > this.player.x)
+	{
+		this.body.velocity.x = -150;
+	}
+	else 
+	{
+		this.body.x = 0;
+	}
+}
+
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 function preload() {
     game.load.atlasJSONHash('axe', 'assets/axeSprites.png', 'assets/axeSprites.json');
     game.load.spritesheet('ada', 'assets/Ada.png',48,48);
-    game.load.image('projectile', 'assets/teddybearprojectile.png')
+    game.load.image('projectile', 'assets/teddybearprojectile.png');
+    game.load.image('star', 'assets/star.png');
 }
 	
 var player;
@@ -81,6 +119,7 @@ function create() {
     axe1 = new MeleeEnemy(game, 300, 300, player);
     axe2 = new MeleeEnemy(game, 500, 500, player);
     
+    star = new RangedEnemy(game, 700,500, player);
 
     player.animations.add('left', [1, 5, 9, 13], 10, true);
     player.animations.add('right', [3, 7, 11, 15], 10, true);
