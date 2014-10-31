@@ -1,9 +1,11 @@
 MeleeEnemy = function (game, x, y, player){
 
+	this.game = game;
+
 	this.player = player;
 	this.melee = game.add.sprite(x, y, 'axe');
 
-	game.physics.enable(this.melee, Phaser.Physics.ARCADE);
+	this.game.physics.enable(this.melee, Phaser.Physics.ARCADE);
 
 	this.melee.animations.add('beginSwing', Phaser.Animation.generateFrameNames('axe', 21, 29, '', 2));
     this.melee.animations.add('swing', Phaser.Animation.generateFrameNames('axe', 30, 32, '', 2));
@@ -19,21 +21,23 @@ MeleeEnemy.prototype.constructor = MeleeEnemy;
 
 MeleeEnemy.prototype.update = function() {
 
-	game.physics.arcade.collide(this.melee,this.player);
+	this.game.physics.arcade.collide(this.melee,this.player);
 
-	if (game.physics.arcade.distanceBetween(this.melee, this.player) < 500)
+	if (this.game.physics.arcade.distanceBetween(this.melee, this.player) < 500)
 	{
-		game.physics.arcade.moveToObject(this.melee, this.player,100);
+		this.game.physics.arcade.moveToObject(this.melee, this.player,100);
 		//this.melee.animations.play('swing',15,true);
 	}
 }
 
 RangedEnemy = function (game, x, y, player){
 
+	this.game = game;
+
 	this.player = player;
 	this.ranged = game.add.sprite(x, y, 'star');
 
-	game.physics.enable(this.ranged,Phaser.Physics.ARCADE);
+	this.game.physics.enable(this.ranged,Phaser.Physics.ARCADE);
 
     this.ranged.anchor.set(0.5,0.5);
     this.ranged.scale.setTo(1,1);
@@ -45,7 +49,7 @@ RangedEnemy.prototype.constructor = RangedEnemy;
 
 RangedEnemy.prototype.update = function() {
 
-	game.physics.arcade.collide(this.ranged,this.player);
+	this.game.physics.arcade.collide(this.ranged,this.player);
 
 	if (this.ranged.body.x < this.player.x)
 	{

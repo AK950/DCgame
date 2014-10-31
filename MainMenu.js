@@ -2,6 +2,7 @@
 BasicGame.MainMenu = function (game) {
 
 	this.music = null;
+	this.titlePage = null;
 	this.playButton = null;
 
 };
@@ -17,10 +18,13 @@ BasicGame.MainMenu.prototype = {
 		this.music = this.add.audio('titleMusic');
 		this.music.play();
 
-		this.add.sprite(0, 0, 'titlepage');
+		this.titlePage = this.add.sprite(0, 0, 'titlepage');
+		this.titlePage.width = 800;
+		this.titlePage.height = 600;
 
-		this.playButton = this.add.button(400, 600, 'playButton', this.startGame, this, 'buttonOver', 'buttonOut', 'buttonOver');
-
+		this.playButton = this.add.button(200, 300, 'playButton', this.startGame, this, 'buttonOver', 'buttonOut', 'buttonOver');
+		this.playButton.width = 300;
+		this.playButton.height = 200;
 	},
 
 	update: function () {
