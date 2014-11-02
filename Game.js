@@ -25,9 +25,12 @@ BasicGame.Game = function (game) {
     this.player;
     this.cursors;
 
+    this.music;
+
     this.direction = 0;
 
     this.teddies;
+    this.explosions;
 
     this.west;
     this.east;
@@ -68,14 +71,14 @@ BasicGame.Game.prototype = {
         this.meleeCreep.push(new MeleeEnemy(this.game, 500, 500, this.player));
         
         this.rangedCreep = [];
-        this.rangedCreep.push(new RangedEnemy(this.game, 700,500, this.player));
+        /*this.rangedCreep.push(new RangedEnemy(this.game, 700,500, this.player));*/
 
         this.meleeCreepBody = [];
         this.meleeCreepBody.push(this.meleeCreep[0].melee);
         this.meleeCreepBody.push(this.meleeCreep[1].melee);
         
         this.rangedCreepBody = [];
-        this.rangedCreepBody.push(this.rangedCreep[0].ranged);
+        /*this.rangedCreepBody.push(this.rangedCreep[0].ranged);*/
 
         this.teddies = this.game.add.group();
         this.teddies.enableBody = true;
@@ -85,6 +88,14 @@ BasicGame.Game.prototype = {
 
         this.teddies.setAll('checkWorldBounds', true);
         this.teddies.setAll('outOfBoundsKill', true);
+
+        this.explosions = this.game.add.group();
+        for (var i = 0; i < 30; i++)
+        {
+            var explosionAnimation = this.explosions.create(0,0, 'explosion', [0], false);
+            explosionAnimation.anchor.setTo(0.5,0.5);
+            explosionAnimation.animations.add('explosion');
+        }
 
         this.player.animations.add('left', [1, 5, 9, 13], 10, true);
         this.player.animations.add('right', [3, 7, 11, 15], 10, true);
@@ -100,6 +111,8 @@ BasicGame.Game.prototype = {
         this.player.anchor.set(0.5,0.5);
         this.player.body.setSize(32,32,0,2);
         
+        this.music = this.add.audio('gameMusic');
+        this.music.play();
     },
 
     update: function () {
@@ -215,6 +228,18 @@ BasicGame.Game.prototype = {
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.Q).isDown){
             this.quitGame();
         }
+        if (this.game.input.keyboard.addKey(Phaser.Keyboard.E).isDown){
+            this.explode(this.player);
+        }
+        if (this.game.input.keyboard.addKey(Phaser.Keyboard.R).isDown){
+            this.explode(this.meleeCreepBody[0]);
+        }
+        if (this.game.input.keyboard.addKey(Phaser.Keyboard.T).isDown){
+            this.explode(this.meleeCreepBody[1]);
+        }
+        //this.game.debug.cameraInfo(this.game.camera, 300, 32);
+        //this.game.debug.spriteInfo(this.player, 32, 32);
+        //this.game.debug.body(this.player);
     },
 
     shoot: function() {
@@ -242,8 +267,16 @@ BasicGame.Game.prototype = {
             }
         }
     },
+    explode: function(sprite) {
+        if (sprite.exists){
+            sprite.kill();
+            var explosionAnimation = this.explosions.getFirstExists(false);
+            explosionAnimation.reset(sprite.x+3,sprite.y-30);
+            explosionAnimation.play('explosion', 30, false, true);
+        }
+    },
 
-    quitGame: function () {
+    quitGame: function (pointer) {
 
         //  Here you should destroy anything you no longer need.
         //  Stop music, delete sprites, purge caches, free resources, all that good stuff.
@@ -260,6 +293,8 @@ BasicGame.Game.prototype = {
         for (var i = this.rangedCreepBody.length - 1; i >= 0; i--) {
             this.rangedCreepBody[i].destroy(true);
         };
+
+        this.music.stop();
 
         //  Then let's go back to the main menu.
         this.state.start('MainMenu');

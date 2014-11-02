@@ -26,7 +26,7 @@ MeleeEnemy.prototype.update = function() {
 	if (this.game.physics.arcade.distanceBetween(this.melee, this.player) < 500)
 	{
 		this.game.physics.arcade.moveToObject(this.melee, this.player,100);
-		//this.melee.animations.play('swing',15,true);
+		this.melee.animations.play('swing',15,true);
 	}
 }
 

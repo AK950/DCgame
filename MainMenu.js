@@ -22,9 +22,9 @@ BasicGame.MainMenu.prototype = {
 		this.titlePage.width = 800;
 		this.titlePage.height = 600;
 
-		this.playButton = this.add.button(200, 300, 'playButton', this.startGame, this, 'buttonOver', 'buttonOut', 'buttonOver');
-		this.playButton.width = 300;
-		this.playButton.height = 200;
+		this.playButton = this.add.button(300, 200, 'playButton', this.startGame, this, 'buttonOver', 'buttonOut', 'buttonOver');
+		this.playButton.width = 200;
+		this.playButton.height = 100;
 	},
 
 	update: function () {
