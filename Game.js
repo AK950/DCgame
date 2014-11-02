@@ -213,7 +213,7 @@ BasicGame.Game.prototype = {
         }
 
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.Q).isDown){
-            this.quitGame(this);
+            this.quitGame();
         }
     },
 
@@ -243,7 +243,7 @@ BasicGame.Game.prototype = {
         }
     },
 
-    quitGame: function (pointer) {
+    quitGame: function () {
 
         //  Here you should destroy anything you no longer need.
         //  Stop music, delete sprites, purge caches, free resources, all that good stuff.
@@ -253,12 +253,12 @@ BasicGame.Game.prototype = {
             this.teddies.destroy(true);
         };
 
-        for (var i = this.meleeCreep.length - 1; i >= 0; i--) {
-            this.meleeCreep[i].destroy(true);
+        for (var i = this.meleeCreepBody.length - 1; i >= 0; i--) {
+            this.meleeCreepBody[i].destroy(true);
         };
 
-        for (var i = this.rangedCreep.length - 1; i >= 0; i--) {
-            this.rangedCreep[i].destroy(true);
+        for (var i = this.rangedCreepBody.length - 1; i >= 0; i--) {
+            this.rangedCreepBody[i].destroy(true);
         };
 
         //  Then let's go back to the main menu.
