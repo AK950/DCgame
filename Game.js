@@ -53,74 +53,98 @@ BasicGame.Game = function (game) {
 BasicGame.Game.prototype = {
     
     create: function () {
+        //Add physics to our game
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
+        //Assign WASD controls to variables
         this.west = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
         this.east = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
         this.north = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
         this.south = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
 
+        //Assign SPACE to a variable
         this.space = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACE);
 
+        //Declare cursors (arrow keys)
         this.cursors = this.game.input.keyboard.createCursorKeys();
 
+        //Add in the player to the game
         this.player = this.game.add.sprite(100, 100, 'ada');
 
+        //Our player obeys physics
+        this.game.physics.enable(this.player,Phaser.Physics.ARCADE);
+
+        //Player collision detection against world
+        this.player.body.collideWorldBounds = true;
+
+        //Player anchor and collision box
+        this.player.anchor.set(0.5,0.5);
+        this.player.body.setSize(32,32,0,2);
+
+        //Add our player movement animations
+        this.player.animations.add('left', [1, 5, 9, 13], 10, true);
+        this.player.animations.add('right', [3, 7, 11, 15], 10, true);
+        this.player.animations.add('up', [2, 6, 10, 14], 10, true);
+        this.player.animations.add('down', [0, 4, 8, 12], 10, true);
+
+        //Declare list of melee enemies
         this.meleeCreep = [];
         this.meleeCreep.push(new MeleeEnemy(this.game, 400, 500, this.player));
         this.meleeCreep.push(new MeleeEnemy(this.game, 500, 500, this.player));
         
+        //Declare list of ranged enemies
         this.rangedCreep = [];
         /*this.rangedCreep.push(new RangedEnemy(this.game, 700,500, this.player));*/
 
+        //Another list for just the melee enemies bodies
         this.meleeCreepBody = [];
         this.meleeCreepBody.push(this.meleeCreep[0].melee);
         this.meleeCreepBody.push(this.meleeCreep[1].melee);
         
+        //Another list for just the ranged enemies bodies
         this.rangedCreepBody = [];
         /*this.rangedCreepBody.push(this.rangedCreep[0].ranged);*/
 
+        //Add a teddies group (projectile)
         this.teddies = this.game.add.group();
+
+        //These teddies will be bodies
         this.teddies.enableBody = true;
+
+        //Teddies also follow arcade physics
         this.teddies.physicsBodyType = Phaser.Physics.ARCADE;
 
+        //Add 100 teddy bears to our group using our sprite 'teddy'
         this.teddies.createMultiple(100,'teddy');
 
+        //All teddies will obey our world bounds and die when they get there
         this.teddies.setAll('checkWorldBounds', true);
         this.teddies.setAll('outOfBoundsKill', true);
 
+        //Add our explosions group
         this.explosions = this.game.add.group();
+
+        //Declare explosion animations to create, settings are largely default
         for (var i = 0; i < 30; i++)
         {
             var explosionAnimation = this.explosions.create(0,0, 'explosion', [0], false);
             explosionAnimation.anchor.setTo(0.5,0.5);
             explosionAnimation.animations.add('explosion');
         }
-
-        this.player.animations.add('left', [1, 5, 9, 13], 10, true);
-        this.player.animations.add('right', [3, 7, 11, 15], 10, true);
-        this.player.animations.add('up', [2, 6, 10, 14], 10, true);
-        this.player.animations.add('down', [0, 4, 8, 12], 10, true);
-
-        this.game.physics.enable(this.player,Phaser.Physics.ARCADE);
-
-        //collision detection against world
-        this.player.body.collideWorldBounds = true;
-
-        //sets up anchor and collision box
-        this.player.anchor.set(0.5,0.5);
-        this.player.body.setSize(32,32,0,2);
         
+        //Music for our game itself
         this.music = this.add.audio('gameMusic');
         this.music.play();
     },
 
     update: function () {
-
+        //By default, our player is at rest
         this.player.body.velocity.setTo(0,0);
 
+        //Our player also obeys world boundaries
         this.player.body.collideWorldBounds = true;
 
+        //Code to play animation of movement and have velocity depending on WASD keys, math is used for diagonal movement
         if (this.east.isDown && this.south.isDown)
         {
             this.player.body.velocity.x = this.speed/Math.sqrt(2);
@@ -189,6 +213,8 @@ BasicGame.Game.prototype = {
                 this.player.frame = 3;
             }
         }
+
+        //Cursor buttons are used to shoot in the corresponding direction
         if (this.cursors.up.isDown)
         {
             this.direction = 2;
@@ -211,12 +237,19 @@ BasicGame.Game.prototype = {
             this.shoot();
         }
 
-        for (var i = this.rangedCreep.length - 1; i >= 0; i--) {
+        //Update all of our ranged creep
+        for (var i = 0; i < this.rangedCreep.length; i++) {
             this.rangedCreep[i].update();
-        } 
+            for (var j = i+1; j < this.rangedCreep.length; j++)
+            {
+                this.game.physics.arcade.collide(this.rangedCreepBody[i],this.rangedCreepBody[j]);
+            }
+        }
 
+        //Collision between our ranged and melee enemies
         this.game.physics.arcade.collide(this.meleeCreepBody,this.rangedCreepBody);
 
+        //Update all melee enemies and add collision between them
         for (var i = 0; i < this.meleeCreep.length; i++) {
             this.meleeCreep[i].update();
             for (var j = i+1; j < this.meleeCreep.length; j++)
@@ -225,6 +258,7 @@ BasicGame.Game.prototype = {
             }
         }
 
+        //Some keyboard test inputs
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.Q).isDown){
             this.quitGame();
         }
@@ -237,12 +271,15 @@ BasicGame.Game.prototype = {
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.T).isDown){
             this.explode(this.meleeCreepBody[1]);
         }
+
+        //Useful debug information
         //this.game.debug.cameraInfo(this.game.camera, 300, 32);
         //this.game.debug.spriteInfo(this.player, 32, 32);
         //this.game.debug.body(this.player);
     },
 
     shoot: function() {
+        //Depending on our cooldown, will fire a projectile
         if (this.game.time.now > this.nextFire)
         {
             teddy = this.teddies.getFirstExists(false);
@@ -267,6 +304,8 @@ BasicGame.Game.prototype = {
             }
         }
     },
+
+    //Blows up the called sprite
     explode: function(sprite) {
         if (sprite.exists){
             sprite.kill();
@@ -276,6 +315,7 @@ BasicGame.Game.prototype = {
         }
     },
 
+    //Quits the game back to the main menu
     quitGame: function (pointer) {
 
         //  Here you should destroy anything you no longer need.
