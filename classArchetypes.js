@@ -1,12 +1,15 @@
 //function to define melee enemies
-MeleeEnemy = function (game, x, y, player){
+MeleeEnemy = function (index, game, x, y, player){
 
 	//standard assignments
 	this.game = game;
 	this.player = player;
+	this.health = 15;
 
 	//add the melee enemy as a sprite to the game
 	this.melee = game.add.sprite(x, y, 'axe');
+
+	this.melee.name = index.toString();
 
 	//enable physics for the melee enemy, needed to enable body
 	this.game.physics.enable(this.melee, Phaser.Physics.ARCADE);
@@ -38,6 +41,15 @@ MeleeEnemy.prototype.update = function() {
 		this.game.physics.arcade.moveToObject(this.melee, this.player,100);
 		this.melee.animations.play('swing',15,true);
 	}
+}
+
+MeleeEnemy.prototype.damage = function() {
+	this.health -= 1;
+	if (this.health <= 0){
+		this.melee.kill();
+		return true;
+	}
+	return false;
 }
 
 //function for ranged enemy

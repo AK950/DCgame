@@ -89,8 +89,8 @@ BasicGame.Game.prototype = {
 
         //Declare list of melee enemies
         this.meleeCreep = [];
-        this.meleeCreep.push(new MeleeEnemy(this.game, 400, 500, this.player));
-        this.meleeCreep.push(new MeleeEnemy(this.game, 500, 500, this.player));
+        this.meleeCreep.push(new MeleeEnemy(0,this.game, 400, 500, this.player));
+        this.meleeCreep.push(new MeleeEnemy(1,this.game, 500, 500, this.player));
         
         //Declare list of ranged enemies
         this.rangedCreep = [];
@@ -251,6 +251,7 @@ BasicGame.Game.prototype = {
 
         //Update all melee enemies and add collision between them
         for (var i = 0; i < this.meleeCreep.length; i++) {
+            this.game.physics.arcade.overlap(this.teddies, this.meleeCreep[i].melee, this.projectileHitsEnemy, null, this);
             this.meleeCreep[i].update();
             for (var j = i+1; j < this.meleeCreep.length; j++)
             {
@@ -307,11 +308,21 @@ BasicGame.Game.prototype = {
 
     //Blows up the called sprite
     explode: function(sprite) {
-        if (sprite.exists){
-            sprite.kill();
-            var explosionAnimation = this.explosions.getFirstExists(false);
-            explosionAnimation.reset(sprite.x+3,sprite.y-30);
-            explosionAnimation.play('explosion', 30, false, true);
+        sprite.kill();
+        var explosionAnimation = this.explosions.getFirstExists(false);
+        explosionAnimation.reset(sprite.x+3,sprite.y-30);
+        explosionAnimation.play('explosion', 30, false, true);
+    },
+
+    //Called when projectile hits an enemy
+    projectileHitsEnemy: function(meleeEnemy,projectile) {
+        projectile.kill();
+
+        var dead = this.meleeCreep[meleeEnemy.name].damage();
+
+        if (dead){
+            console.log(this.meleeCreep[meleeEnemy.name].health);
+            this.explode(this.meleeCreep[meleeEnemy.name].melee);
         }
     },
 
