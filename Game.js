@@ -48,6 +48,8 @@ BasicGame.Game = function (game) {
     this.rangedCreep;
     this.meleeCreepBody;
     this.rangedCreepBody;
+
+    this.hud;
 };
 
 BasicGame.Game.prototype = {
@@ -136,6 +138,30 @@ BasicGame.Game.prototype = {
         //Music for our game itself
         this.music = this.add.audio('gameMusic');
         this.music.play();
+
+        this.hud = new BasicGame.HUD(this.game);
+        this.hud.create();
+
+
+/*
+        this.hud = this.add.sprite(0,0,'HUD');
+        this.game.physics.enable(this.hud, Phaser.Physics.ARCADE);
+        this.hud.width = 800;
+        this.hud.height = 50;
+        this.hud.body.immovable = true;
+
+        this.hearts = [];
+        this.hearts[0] = this.add.sprite(50,20,'hearts');
+        this.ada_thumb = this.add.sprite(0, 0, 'ada');
+
+        this.hearts[1] = this.add.sprite(620, 20, 'hearts');
+        this.axe_thumb0 = this.add.sprite(560, 0, 'axe');
+
+        this.hearts[2] = this.add.sprite(380,20,'hearts');
+        this.axe_thumb1 = this.add.sprite(320,0,'axe');
+        //this.hearts.crop(new Phaser.Rectangle(0,0,14,16));
+ */
+
     },
 
     update: function () {
@@ -273,6 +299,14 @@ BasicGame.Game.prototype = {
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.T).isDown){
             this.explode(this.meleeCreepBody[1]);
         }*/
+
+        this.hud.update(this.player, this.meleeCreep[0], this.meleeCreep[1]);
+
+/*
+         this.game.physics.arcade.collide(this.hud, this.player);
+         this.game.physics.arcade.collide(this.hud, this.meleeCreepBody[0]);
+         this.game.physics.arcade.collide(this.hud, this.meleeCreepBody[1]);
+*/        
 
         //Useful debug information
         //this.game.debug.cameraInfo(this.game.camera, 300, 32);

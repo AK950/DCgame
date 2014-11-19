@@ -4,7 +4,11 @@ MeleeEnemy = function (index, game, x, y, player){
 	//standard assignments
 	this.game = game;
 	this.player = player;
+<<<<<<< HEAD
 	this.health = 3;
+=======
+	this.health = 10;
+>>>>>>> gautam
 
 	//add the melee enemy as a sprite to the game
 	this.melee = game.add.sprite(x, y, 'axe');
@@ -30,6 +34,7 @@ MeleeEnemy = function (index, game, x, y, player){
 
 //add the phaser sprite prototypes
 MeleeEnemy.prototype = Object.create(Phaser.Sprite.prototype);
+// Formally defines the function mentioned above to be the constructor of the object below
 MeleeEnemy.prototype.constructor = MeleeEnemy;
 
 MeleeEnemy.prototype.update = function() {
