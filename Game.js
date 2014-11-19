@@ -70,7 +70,8 @@ BasicGame.Game.prototype = {
 
         //Add in the player to the game
         this.player = this.game.add.sprite(100, 100, 'ada');
-
+        this.player.health = 5;
+        
         //Our player obeys physics
         this.game.physics.enable(this.player,Phaser.Physics.ARCADE);
 
@@ -263,7 +264,7 @@ BasicGame.Game.prototype = {
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.Q).isDown){
             this.quitGame();
         }
-        if (this.game.input.keyboard.addKey(Phaser.Keyboard.E).isDown){
+        /*if (this.game.input.keyboard.addKey(Phaser.Keyboard.E).isDown){
             this.explode(this.player);
         }
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.R).isDown){
@@ -271,7 +272,7 @@ BasicGame.Game.prototype = {
         }
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.T).isDown){
             this.explode(this.meleeCreepBody[1]);
-        }
+        }*/
 
         //Useful debug information
         //this.game.debug.cameraInfo(this.game.camera, 300, 32);

@@ -4,11 +4,12 @@ MeleeEnemy = function (index, game, x, y, player){
 	//standard assignments
 	this.game = game;
 	this.player = player;
-	this.health = 15;
+	this.health = 3;
 
 	//add the melee enemy as a sprite to the game
 	this.melee = game.add.sprite(x, y, 'axe');
 
+	//adds a name to the melee enemy
 	this.melee.name = index.toString();
 
 	//enable physics for the melee enemy, needed to enable body
@@ -53,13 +54,16 @@ MeleeEnemy.prototype.damage = function() {
 }
 
 //function for ranged enemy
-RangedEnemy = function (game, x, y, player){
+RangedEnemy = function (index, game, x, y, player){
 	//standard assignments
 	this.game = game;
 	this.player = player;
 
 	//add sprite to the ranged enemy
 	this.ranged = game.add.sprite(x, y, 'star');
+
+	//adds a name to the ranged enemy
+	this.ranged.name = index.toString();
 
 	//enable physics for the ranged enemy
 	this.game.physics.enable(this.ranged,Phaser.Physics.ARCADE);
