@@ -27,8 +27,8 @@ BasicGame.Preloader.prototype = {
 		//	As this is just a Project Template I've not provided these assets, swap them for your own.
 		this.load.image('titlepage', 'assets/exampleBackground.png');
 		this.load.image('playButton', 'assets/playButton.png');//, 'images/play_button.json');
-		this.load.audio('titleMusic', ['assets/mainMenu.mp3']);
-		this.load.audio('gameMusic', ['assets/fearHorror.mp3']);
+		this.load.audio('titleMusic', 'assets/mainMenu.mp3');
+		this.load.audio('gameMusic', 'assets/fearHorror.mp3');
 		this.load.atlasJSONHash('axe', 'assets/axeSprites.png', 'assets/axeSprites.json');
     	this.load.spritesheet('ada', 'assets/Ada.png',48,48);
     	this.load.image('teddy', 'assets/teddybearprojectile.png');
@@ -38,6 +38,9 @@ BasicGame.Preloader.prototype = {
     	this.load.image('health', 'assets/zelda-hearts.png');
 		//this.load.bitmapFont('caslon', 'fonts/caslon.png', 'fonts/caslon.xml');
 		//	+ lots of other required assets here
+		this.load.image('HUD', 'assets/platform.png');
+		this.load.image('hearts','assets/zelda-hearts.png');
+		
 
 	},
 
