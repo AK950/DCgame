@@ -1,45 +1,26 @@
-BasicGame.HUD = function(game) {
-
+HUD = function(game) {
+	
 	this.game = game;
-	this.thumbnails = [];
-	this.healthhearts = [];
-}  
+	this.sprite = game.add.sprite(0,0,'HUD');
+	game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
+	this.sprite.body.immovable = true;
+	this.sprite.width = 800;
+	this.sprite.height = 50;
+	var player_icon = game.add.sprite(15,0,'ada');
+	this.health_bar = game.add.sprite(70, 20, 'health');
 
-//BasicGame.HUD.prototype.constructor = BasicGame.HUD 
+}
 
-BasicGame.HUD.prototype = {
+HUD.prototype = {
 
-	create: function() {
-
-		this.hudsprite = this.game.add.sprite(0,0,'HUD');
-        this.game.physics.enable(this.hudsprite, Phaser.Physics.ARCADE);
-        this.hudsprite.width = 800;
-        this.hudsprite.height = 50;
-        this.hudsprite.body.immovable = true;
-
-		this.healthhearts[0] = this.game.add.sprite(50,20,'hearts');
-        this.thumbnails[0] = this.game.add.sprite(0, 0, 'ada');
-
-        this.healthhearts[1] = this.game.add.sprite(620, 20, 'hearts');
-        this.thumbnails[1] = this.game.add.sprite(560, 0, 'axe');
-
-        this.thumbnails[2] = this.game.add.sprite(320,0,'axe');
-        this.healthhearts[2] = this.game.add.sprite(380,20,'hearts');
-        
-	}, 
-	update: function(player, melee0, melee1) {
-
-		 this.game.physics.arcade.collide(this.hudsprite, player);
-         this.game.physics.arcade.collide(this.hudsprite, melee0.melee);
-         this.game.physics.arcade.collide(this.hudsprite, melee1.melee);
-
-		if (!player.alive)
-			this.healthhearts[0].kill();
-		if(!melee0.melee.alive)
-			this.healthhearts[1].kill();
-		if(!melee1.melee.alive)
-			this.healthhearts[2].kill();
+	collisions: function(player, enemy_1, enemy_2) {
+		this.game.physics.arcade.collide(player, this.sprite);
+		this.game.physics.arcade.collide(enemy_1, this.sprite);
+		this.game.physics.arcade.collide(enemy_2, this.sprite);
+	},
+	update: function(player) {
+		var rec = new Phaser.Rectangle(0,0,(158/10)*player.health, 14)
+		this.health_bar.crop(rec);
 	}
-
 
 }

@@ -4,11 +4,10 @@ MeleeEnemy = function (index, game, x, y, player){
 	//standard assignments
 	this.game = game;
 	this.player = player;
-<<<<<<< HEAD
 	this.health = 3;
-=======
-	this.health = 10;
->>>>>>> gautam
+
+	this.collide_with_player = false;
+
 
 	//add the melee enemy as a sprite to the game
 	this.melee = game.add.sprite(x, y, 'axe');
@@ -39,8 +38,21 @@ MeleeEnemy.prototype.constructor = MeleeEnemy;
 
 MeleeEnemy.prototype.update = function() {
 	//enable collision between the melee enemies and player
-	this.game.physics.arcade.collide(this.melee,this.player);
+	if (this.game.physics.arcade.collide(this.melee, this.player, this.causePlayerDamage, null, this))
+	{
+		this.collide_with_player = true;
+		var tempx = this.player.x + (0.7)*(this.player.x - this.melee.x);
+		var tempy = this.player.y + (0.7)*(this.player.y - this.melee.y);
+		//if (tempx <= 800 && tempx => 0)
+			this.player.x = tempx;
+		//if (tempy <= 600 && tempy => 50)
+			this.player.y = tempy;
 
+ 	}
+	else
+	{
+		this.collide_with_player = false;
+	}
 	//within some distance, have the melee enemy chase the player
 	if (this.game.physics.arcade.distanceBetween(this.melee, this.player) < 500)
 	{
@@ -56,6 +68,16 @@ MeleeEnemy.prototype.damage = function() {
 		return true;
 	}
 	return false;
+}
+
+MeleeEnemy.prototype.causePlayerDamage = function(melee, player) {
+
+	if (!this.collide_with_player)
+	{
+		player.damage(1);
+		//console.log(player.health);
+		player.body.velocity.x = -1;
+	}
 }
 
 //function for ranged enemy

@@ -33,7 +33,9 @@ BasicGame.Preloader.prototype = {
     	this.load.spritesheet('ada', 'assets/Ada.png',48,48);
     	this.load.image('teddy', 'assets/teddybearprojectile.png');
     	this.load.image('star', 'assets/star.png');
-    	this.load.spritesheet('explosion', 'assets/explosion.png',128,128)
+    	this.load.spritesheet('explosion', 'assets/explosion.png',128,128);
+    	this.load.image('HUD', 'assets/platform.png');
+    	this.load.image('health', 'assets/zelda-hearts.png');
 		//this.load.bitmapFont('caslon', 'fonts/caslon.png', 'fonts/caslon.xml');
 		//	+ lots of other required assets here
 		this.load.image('HUD', 'assets/platform.png');
