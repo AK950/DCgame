@@ -139,32 +139,17 @@ BasicGame.Game.prototype = {
         this.music = this.add.audio('gameMusic');
         this.music.play();
 
-
-/*
-        this.hud = this.add.sprite(0,0,'HUD');
-        this.game.physics.enable(this.hud, Phaser.Physics.ARCADE);
-        this.hud.width = 800;
-        this.hud.height = 50;
-        this.hud.body.immovable = true;
-
-        this.hearts = [];
-        this.hearts[0] = this.add.sprite(50,20,'hearts');
-        this.ada_thumb = this.add.sprite(0, 0, 'ada');
-
-        this.hearts[1] = this.add.sprite(620, 20, 'hearts');
-        this.axe_thumb0 = this.add.sprite(560, 0, 'axe');
-
-        this.hearts[2] = this.add.sprite(380,20,'hearts');
-        this.axe_thumb1 = this.add.sprite(320,0,'axe');
-        //this.hearts.crop(new Phaser.Rectangle(0,0,14,16));
- */
+        // Add the HUD
         this.HUD = new HUD(this.game);
 
 
     },
 
     update: function () {
+
+        // Make sure entities don't go through the HUD
         this.HUD.collisions(this.player, this.meleeCreepBody[0], this.meleeCreepBody[1]);
+        // Make sure the displayed health of the player updates
         this.HUD.update(this.player);
 
         //By default, our player is at rest
