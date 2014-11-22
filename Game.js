@@ -48,6 +48,8 @@ BasicGame.Game = function (game) {
     this.rangedCreep;
     this.meleeCreepBody;
     this.rangedCreepBody;
+
+    this.HUD
 };
 
 BasicGame.Game.prototype = {
@@ -70,7 +72,7 @@ BasicGame.Game.prototype = {
 
         //Add in the player to the game
         this.player = this.game.add.sprite(100, 100, 'ada');
-        this.player.health = 5;
+        this.player.health = 10;
         
         //Our player obeys physics
         this.game.physics.enable(this.player,Phaser.Physics.ARCADE);
@@ -136,9 +138,15 @@ BasicGame.Game.prototype = {
         //Music for our game itself
         this.music = this.add.audio('gameMusic');
         this.music.play();
+
+        this.HUD = new HUD(this.game);
+
     },
 
     update: function () {
+        this.HUD.collisions(this.player, this.meleeCreepBody[0], this.meleeCreepBody[1]);
+        this.HUD.update(this.player);
+
         //By default, our player is at rest
         this.player.body.velocity.setTo(0,0);
 
@@ -278,6 +286,7 @@ BasicGame.Game.prototype = {
         //this.game.debug.cameraInfo(this.game.camera, 300, 32);
         //this.game.debug.spriteInfo(this.player, 32, 32);
         //this.game.debug.body(this.player);
+
     },
 
     shoot: function() {

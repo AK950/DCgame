@@ -20,7 +20,7 @@ BasicGame.MainMenu.prototype = {
 
 		this.titlePage = this.add.sprite(0, 0, 'titlepage');
 		this.titlePage.width = 800;
-		this.titlePage.height = 600;
+		this.titlePage.height = 650;
 
 		this.playButton = this.add.button(300, 200, 'playButton', this.startGame, this, 'buttonOver', 'buttonOut', 'buttonOver');
 		this.playButton.width = 200;
