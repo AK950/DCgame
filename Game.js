@@ -279,15 +279,18 @@ BasicGame.Game.prototype = {
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.Q).isDown){
             this.quitGame();
         }
-        /*if (this.game.input.keyboard.addKey(Phaser.Keyboard.E).isDown){
-            this.explode(this.player);
+        if (this.game.input.keyboard.addKey(Phaser.Keyboard.E).isDown){
+            this.shootingType = 0;
         }
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.R).isDown){
-            this.explode(this.meleeCreepBody[0]);
+            this.shootingType = 1;
         }
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.T).isDown){
-            this.explode(this.meleeCreepBody[1]);
-        }*/
+            this.shootingType = 2;
+        }
+        if (this.game.input.keyboard.addKey(Phaser.Keyboard.Y).isDown){
+            this.shootingType = 3;
+        }
 
 
 /*
@@ -305,29 +308,100 @@ BasicGame.Game.prototype = {
 
     shoot: function() {
         //Depending on our cooldown, will fire a projectile
-        if (this.game.time.now > this.nextFire)
-        {
-            teddy = this.teddies.getFirstExists(false);
-            
-            if (teddy)
+        if (this.shootingType == 0){
+            this.fireRate = 300;
+            if (this.game.time.now > this.nextFire)
             {
-                teddy.reset(this.player.x-12, this.player.y-10);
+                teddy = this.teddies.getFirstExists(false);
+                
+                if (teddy)
+                {
+                    teddy.reset(this.player.x-12, this.player.y-10);
 
-                if (this.direction == 0){
-                    teddy.body.velocity.y = this.projectileSpeed;
+                    if (this.direction == 0){
+                        teddy.body.velocity.y = this.projectileSpeed;
+                    }
+                    if (this.direction == 1){
+                        teddy.body.velocity.x = -this.projectileSpeed;
+                    }
+                    if (this.direction == 2){
+                        teddy.body.velocity.y = -this.projectileSpeed;
+                    }
+                    if (this.direction == 3){
+                        teddy.body.velocity.x = this.projectileSpeed;
+                    }
+                    this.nextFire = this.game.time.now + this.fireRate;
                 }
-                if (this.direction == 1){
-                    teddy.body.velocity.x = -this.projectileSpeed;
-                }
-                if (this.direction == 2){
-                    teddy.body.velocity.y = -this.projectileSpeed;
-                }
-                if (this.direction == 3){
-                    teddy.body.velocity.x = this.projectileSpeed;
-                }
-                this.nextFire = this.game.time.now + this.fireRate;
             }
         }
+        else if (this.shootingType == 1){
+            this.fireRate = 30;
+            var variation = this.projectileSpeed/2;
+            if (this.game.time.now > this.nextFire)
+            {
+                teddy = this.teddies.getFirstExists(false);
+                
+                if (teddy)
+                {
+                    teddy.reset(this.player.x-12, this.player.y-10);
+
+                    if (this.direction == 0){
+                        teddy.body.velocity.x = variation*(2*Math.random()-1);
+                        teddy.body.velocity.y = this.projectileSpeed;
+                    }
+                    if (this.direction == 1){
+                        teddy.body.velocity.x = -this.projectileSpeed;
+                        teddy.body.velocity.y = variation*(2*Math.random()-1);
+                    }
+                    if (this.direction == 2){
+                        teddy.body.velocity.x = variation*(2*Math.random()-1);
+                        teddy.body.velocity.y = -this.projectileSpeed;
+                    }
+                    if (this.direction == 3){
+                        teddy.body.velocity.x = this.projectileSpeed;
+                        teddy.body.velocity.y = variation*(2*Math.random()-1);
+                    }
+                    this.nextFire = this.game.time.now + this.fireRate;
+                }
+            }
+        }
+        else if (this.shootingType == 2){
+            this.fireRate = 30;
+            var variation = this.projectileSpeed/2;
+            if (this.game.time.now > this.nextFire)
+            {
+                teddy = this.teddies.getFirstExists(false);
+                
+                if (teddy)
+                {
+                    teddy.reset(this.player.x-12, this.player.y-10);
+                    teddy.body.velocity.x = this.projectileSpeed*(2*Math.random()-1);
+                    teddy.body.velocity.y = this.projectileSpeed*(2*Math.random()-1);
+                    
+                    this.nextFire = this.game.time.now + this.fireRate;
+                }
+            }
+        }
+        /*else if (this.shootingType == 3){
+            this.fireRate = 30;
+            var variation = this.projectileSpeed/2;
+            if (this.game.time.now > this.nextFire)
+            {
+                teddy = [];
+                for (int i = 0, i < 36, i++){
+                    teddy[i] = this.teddies.getFirstExists(false);
+                }
+                if (teddy[35])
+                {
+                    for (int i = 0, i < 36, i++){
+                        teddy[i].reset(this.player.x-12, this.player.y-10);
+                        teddy[i].body.velocity.x = this.projectileSpeed*Math.cos(i*Math.PI/18);
+                        teddy[i].body.velocity.y = this.projectileSpeed*Math.sin(i*Math.PI/18);
+                    }
+                    this.nextFire = this.game.time.now + this.fireRate;
+                }
+            }
+        }*/
     },
 
     //Blows up the called sprite
