@@ -25,6 +25,8 @@ BasicGame.Game = function (game) {
     this.player;
     this.cursors;
 
+    this.shootingType = 0;
+    
     this.music;
 
     this.direction = 0;
