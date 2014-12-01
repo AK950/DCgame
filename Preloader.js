@@ -40,7 +40,8 @@ BasicGame.Preloader.prototype = {
 		//	+ lots of other required assets here
 		this.load.image('HUD', 'assets/platform.png');
 		this.load.image('hearts','assets/zelda-hearts.png');
-		
+		this.load.tilemap('cave','assets/level1.json',null, Phaser.Tilemap.TILED_JSON);
+		this.load.image('tiles','assets/cave.png')
 
 	},
 

@@ -51,6 +51,10 @@ BasicGame.Game = function (game) {
     this.meleeCreepBody;
     this.rangedCreepBody;
 
+    this.map;
+    this.layer1;
+    this.layer2;
+
     this.HUD;
 };
 
@@ -59,7 +63,31 @@ BasicGame.Game.prototype = {
     create: function () {
         //Add physics to our game
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
+        this.game.stage.backgroundColor = '#787878';
 
+        this.game.world.setBounds(0,0,1920,1920);
+        // Add the HUD
+        this.HUD = new HUD(this.game);
+
+        //Add map
+        this.map = this.game.add.tilemap('cave');
+        this.map.addTilesetImage('cave_tileset', 'tiles');
+
+        this.layer1 = this.map.createLayer('Tile Layer 1');
+        this.layer2 = this.map.createLayer('Tile Layer 2');
+
+        this.layer1.resizeWorld();
+        this.layer2.resizeWorld();
+
+        this.map.setCollisionBetween(61,64,true,this.layer2);
+        this.map.setCollisionBetween(78,79,true,this.layer2);
+        this.map.setCollisionBetween(94,95,true,this.layer2);
+        this.map.setCollisionBetween(27,28,true,this.layer2);
+        this.map.setCollisionBetween(110,111,true,this.layer2);
+        
+        this.map.setCollision(43,true,this.layer2);
+        this.map.setCollision(55,true,this.layer2);
+        
         //Assign WASD controls to variables
         this.west = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
         this.east = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
@@ -140,11 +168,6 @@ BasicGame.Game.prototype = {
         //Music for our game itself
         this.music = this.add.audio('gameMusic');
         this.music.play();
-
-        // Add the HUD
-        this.HUD = new HUD(this.game);
-
-
     },
 
     update: function () {
