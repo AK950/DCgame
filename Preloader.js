@@ -36,11 +36,10 @@ BasicGame.Preloader.prototype = {
     	this.load.spritesheet('explosion', 'assets/explosion.png',128,128);
     	this.load.image('HUD', 'assets/platform.png');
     	this.load.image('health', 'assets/zelda-hearts.png');
+    	this.load.image('item','assets/firstaid.png');
 		//this.load.bitmapFont('caslon', 'fonts/caslon.png', 'fonts/caslon.xml');
 		//	+ lots of other required assets here
-		this.load.image('HUD', 'assets/platform.png');
-		this.load.image('hearts','assets/zelda-hearts.png');
-		this.load.tilemap('cave','assets/level1.json',null, Phaser.Tilemap.TILED_JSON);
+		this.load.tilemap('cave','assets/test.json',null, Phaser.Tilemap.TILED_JSON);
 		this.load.image('tiles','assets/cave.png')
 
 	},

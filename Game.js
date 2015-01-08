@@ -56,6 +56,7 @@ BasicGame.Game = function (game) {
     this.layer2;
 
     this.HUD;
+    this.items;
 };
 
 BasicGame.Game.prototype = {
@@ -66,18 +67,16 @@ BasicGame.Game.prototype = {
         this.game.stage.backgroundColor = '#787878';
 
         this.game.world.setBounds(0,0,1920,1920);
-        // Add the HUD
-        this.HUD = new HUD(this.game);
 
         //Add map
         this.map = this.game.add.tilemap('cave');
-        this.map.addTilesetImage('cave_tileset', 'tiles');
+        this.map.addTilesetImage('cave', 'tiles');
 
         this.layer1 = this.map.createLayer('Tile Layer 1');
-        this.layer2 = this.map.createLayer('Tile Layer 2');
+        //this.layer2 = this.map.createLayer('Tile Layer 2');
 
         this.layer1.resizeWorld();
-        this.layer2.resizeWorld();
+        /*this.layer2.resizeWorld();
 
         this.map.setCollisionBetween(61,64,true,this.layer2);
         this.map.setCollisionBetween(78,79,true,this.layer2);
@@ -86,8 +85,11 @@ BasicGame.Game.prototype = {
         this.map.setCollisionBetween(110,111,true,this.layer2);
         
         this.map.setCollision(43,true,this.layer2);
-        this.map.setCollision(55,true,this.layer2);
+        this.map.setCollision(55,true,this.layer2);*/
         
+        // Add the HUD
+        this.HUD = new HUD(this.game);
+
         //Assign WASD controls to variables
         this.west = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
         this.east = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
@@ -165,6 +167,9 @@ BasicGame.Game.prototype = {
             explosionAnimation.animations.add('explosion');
         }
         
+        //Add item
+        this.items = new powerUps(this.game,this.player,this.explosions,300,300);
+
         //Music for our game itself
         this.music = this.add.audio('gameMusic');
         this.music.play();
@@ -176,6 +181,8 @@ BasicGame.Game.prototype = {
         this.HUD.collisions(this.player, this.meleeCreepBody[0], this.meleeCreepBody[1]);
         // Make sure the displayed health of the player updates
         this.HUD.update(this.player);
+
+        this.items.update();
 
         //By default, our player is at rest
         this.player.body.velocity.setTo(0,0);
@@ -335,7 +342,7 @@ BasicGame.Game.prototype = {
             this.fireRate = 300;
             if (this.game.time.now > this.nextFire)
             {
-                teddy = this.teddies.getFirstExists(false);
+                var teddy = this.teddies.getFirstExists(false);
                 
                 if (teddy)
                 {
@@ -362,7 +369,7 @@ BasicGame.Game.prototype = {
             var variation = this.projectileSpeed/2;
             if (this.game.time.now > this.nextFire)
             {
-                teddy = this.teddies.getFirstExists(false);
+                var teddy = this.teddies.getFirstExists(false);
                 
                 if (teddy)
                 {
@@ -393,7 +400,7 @@ BasicGame.Game.prototype = {
             var variation = this.projectileSpeed/2;
             if (this.game.time.now > this.nextFire)
             {
-                teddy = this.teddies.getFirstExists(false);
+                var teddy = this.teddies.getFirstExists(false);
                 
                 if (teddy)
                 {
@@ -406,23 +413,22 @@ BasicGame.Game.prototype = {
             }
         }
         /*else if (this.shootingType == 3){
-            this.fireRate = 30;
-            var variation = this.projectileSpeed/2;
+            this.fireRate = 100;
             if (this.game.time.now > this.nextFire)
             {
-                teddy = [];
-                for (int i = 0, i < 36, i++){
-                    teddy[i] = this.teddies.getFirstExists(false);
-                }
-                if (teddy[35])
-                {
-                    for (int i = 0, i < 36, i++){
-                        teddy[i].reset(this.player.x-12, this.player.y-10);
-                        teddy[i].body.velocity.x = this.projectileSpeed*Math.cos(i*Math.PI/18);
-                        teddy[i].body.velocity.y = this.projectileSpeed*Math.sin(i*Math.PI/18);
+                var teddys = [];
+                if (!teddys[4]){
+                    for (var i = 0; i < 4; i++){
+                        teddys[i] = this.teddies.getFirstExists(false);
+                        console.log(i);
                     }
-                    this.nextFire = this.game.time.now + this.fireRate;
                 }
+                for (var i = 0; i < 4; i++){
+                    teddys[i].reset(this.player.x-12, this.player.y-10);
+                    teddys[i].body.velocity.x = i*20;
+                    teddys[i].body.velocity.y = i*20;
+                }
+                this.nextFire = this.game.time.now + this.fireRate;
             }
         }*/
     },
